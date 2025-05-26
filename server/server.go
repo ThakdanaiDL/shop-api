@@ -8,9 +8,11 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/ThakdanaiDL.git/shop-api/config"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
 )
@@ -45,6 +47,15 @@ func NewEchoServer(conf *config.Config, db *gorm.DB) *echoServer {
 }
 
 func (s *echoServer) Start() {
+	corsMiddleware := getCORSMiddleware(s.conf.Server.AllowOrigins)
+	bodyLimitMiddleware := getMiddleWareBodyLimit(s.conf.Server.BodyLimit)
+	tiemOutMiddleware := getTimeOutMiddleware(s.conf.Server.Timeout)
+
+	s.app.Use(middleware.Recover())
+	s.app.Use(middleware.Logger())
+	s.app.Use(corsMiddleware)
+	s.app.Use(bodyLimitMiddleware)
+	s.app.Use(tiemOutMiddleware)
 
 	s.app.GET("/v1/health", s.healthCheck)
 
@@ -81,7 +92,32 @@ func (s *echoServer) gracefulshutdown(quiteCH chan os.Signal) {
 }
 
 func (s *echoServer) healthCheck(e echo.Context) error { //endpoint health check
-	return e.String(http.StatusOK, "OK")
+	// return e.String(http.StatusOK, "OK")
+	return e.JSON(http.StatusOK, "statusOK") //core-->  return e.JSONPretty(http.StatusOK, "status", "OK", "  ") คือการส่ง response กลับไปยัง client โดยใช้ JSON format
 }
 
-//testM
+//##############################################################################
+//Middleware
+//##############################################################################
+
+func getTimeOutMiddleware(timeout time.Duration) echo.MiddlewareFunc {
+	return middleware.TimeoutWithConfig(middleware.TimeoutConfig{
+		Skipper:      middleware.DefaultSkipper,
+		ErrorMessage: "Request timeout",
+		Timeout:      timeout,
+	})
+}
+func getCORSMiddleware(allowOrigins []string) echo.MiddlewareFunc {
+	return middleware.CORSWithConfig(middleware.CORSConfig{
+		Skipper:      middleware.DefaultSkipper,
+		AllowOrigins: allowOrigins,
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.PATCH, echo.DELETE},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	})
+}
+
+func getMiddleWareBodyLimit(bodylimit string) echo.MiddlewareFunc {
+
+	return middleware.BodyLimit(bodylimit)
+
+}
