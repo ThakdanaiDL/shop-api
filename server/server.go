@@ -59,6 +59,8 @@ func (s *echoServer) Start() {
 
 	s.app.GET("/v1/health", s.healthCheck)
 
+	s.initItemShopRouter() // core-->  s.initItemShopRouter() คือการเริ่มต้น router ของ item shop
+
 	//***********grace full shutdown***********//
 	quiteCH := make(chan os.Signal, 1)                      //core-->  quiteCH คือ channel ที่ใช้ในการรับ signal ที่ส่งมาจาก os
 	signal.Notify(quiteCH, syscall.SIGINT, syscall.SIGTERM) //core-->  signal.Notify(quiteCH, os.Interrupt) คือการรอรับ signal ที่ส่งมาจาก os
