@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/ThakdanaiDL.git/shop-api/entities"
+	_itemShopExceptions "github.com/ThakdanaiDL.git/shop-api/pkg/itemShop/exception"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -20,7 +21,8 @@ func (r *itemShopRepositoryImpl) Listing() ([]*entities.Item, error) { // Listin
 
 	if err := r.db.Find(&itemList).Error; err != nil {
 		r.logger.Errorf(" Fail to Listing item :%s", err.Error())
-		return nil, err
+		return nil, &_itemShopExceptions.Itemlisting{}
+		// return nil, err
 
 	}
 
