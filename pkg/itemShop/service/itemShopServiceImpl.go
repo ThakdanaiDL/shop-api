@@ -15,9 +15,9 @@ func NewItemShopRepositoryImpl(itemShopRepository repository.ItemShopRepository)
 
 }
 
-func (s *itemShopServiceImp) Listing() ([]*_itemshopModel.Item, error) {
+func (s *itemShopServiceImp) Listing(itemFilter *_itemshopModel.ItemShopFilter) ([]*_itemshopModel.Item, error) {
 
-	itemList, err := s.itemShopRepository.Listing() //ดึงรายการมาจาก repository
+	itemList, err := s.itemShopRepository.Listing(itemFilter) //ดึงรายการมาจาก repository
 	if err != nil {
 		return nil, err
 	}

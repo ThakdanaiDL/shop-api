@@ -49,13 +49,13 @@ func NewEchoServer(conf *config.Config, db *gorm.DB) *echoServer {
 func (s *echoServer) Start() {
 	corsMiddleware := getCORSMiddleware(s.conf.Server.AllowOrigins)
 	bodyLimitMiddleware := getMiddleWareBodyLimit(s.conf.Server.BodyLimit)
-	tiemOutMiddleware := getTimeOutMiddleware(s.conf.Server.Timeout)
+	// tiemOutMiddleware := getTimeOutMiddleware(s.conf.Server.Timeout)
 
 	s.app.Use(middleware.Recover())
 	s.app.Use(middleware.Logger())
 	s.app.Use(corsMiddleware)
 	s.app.Use(bodyLimitMiddleware)
-	s.app.Use(tiemOutMiddleware)
+	// s.app.Use(tiemOutMiddleware)
 
 	s.app.GET("/v1/health", s.healthCheck)
 
