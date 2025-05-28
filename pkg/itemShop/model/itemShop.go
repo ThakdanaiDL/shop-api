@@ -17,5 +17,21 @@ type (
 	ItemShopFilter struct {
 		Name        string `query:"name" validate:"omitempty,max=64"`
 		Description string `query:"description" validate:"omitempty,max=128"`
+		Paginate
+	}
+
+	Paginate struct {
+		Page int64 `query:"page" validate:"required,min=1"`
+		Size int64 `query:"size" validate:"required,min=1,max=20"`
+	}
+
+	PaginateResult struct {
+		Page      int64 `json:"page"`
+		TotalPage int64 `json:"totalPage"`
+	}
+
+	ItemResult struct {
+		Item     []*Item        `json:"items"`
+		Paginate PaginateResult `json:"paginate"`
 	}
 )

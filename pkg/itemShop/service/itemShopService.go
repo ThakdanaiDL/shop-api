@@ -5,5 +5,5 @@ import (
 )
 
 type ItemShopService interface {
-	Listing(itemFilter *_itemshopModel.ItemShopFilter) ([]*_itemshopModel.Item, error) // layer service จะใช้ model ของ itemShopเเทน entities
+	Listing(itemFilter *_itemshopModel.ItemShopFilter) (*_itemshopModel.ItemResult, error) // layer service จะใช้ model ของ itemShopเเทน entities
 }
